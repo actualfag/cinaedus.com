@@ -129,6 +129,31 @@ a:focus-visible {
   outline-offset: 0.1em;
 }
 
+/* Visit numeral (count.js): the replaced letters of RESEARCH·DESIGN·
+   INNOVATION stay in place, invisible, and the numeral is laid over the
+   space they occupied, so the remaining letters never move. */
+.numeral-slot { position: relative; }
+.numeral-ghost { visibility: hidden; }
+.numeral { position: absolute; white-space: nowrap; transform-origin: left; }
+
+/* "Page views: N" at the pointer over INNOVATION / the numeral (count.js). */
+.views-zone { cursor: default; }
+.views-tip {
+  position: fixed;
+  z-index: 30;
+  padding: 2px 7px;
+  font-size: 15px;
+  line-height: 1.3;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  background: var(--bg);
+  border: 1px solid var(--ink);
+  white-space: nowrap;
+  visibility: hidden;
+  pointer-events: none;
+}
+.views-tip.is-visible { visibility: visible; }
+
 /* Inner pages: ordinary reading text under the inscription header. */
 .page-body {
   /* Exactly the menu's width (fit.js may narrow it to fit the window). */

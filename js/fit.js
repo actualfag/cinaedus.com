@@ -18,12 +18,13 @@ const root = document.querySelector('.inscription');
 const lines = [...root.querySelectorAll('.line')];
 const ctx = document.createElement('canvas').getContext('2d');
 
-// Visible text only (skips screen-reader labels).
+// The line's own text (skips screen-reader labels and the visit numeral,
+// which is laid over the line and must not affect its fit; see count.js).
 function visibleText(line) {
   let text = '';
   const walk = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
   while (walk.nextNode()) {
-    if (!walk.currentNode.parentElement.closest('.sr')) text += walk.currentNode.textContent;
+    if (!walk.currentNode.parentElement.closest('.sr, .numeral')) text += walk.currentNode.textContent;
   }
   return text.trim();
 }
