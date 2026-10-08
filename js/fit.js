@@ -92,6 +92,8 @@ function fit() {
     fitLines(width);
   }
   lastWidth = width;
+  // Page content uses the same width as the menu (CSS: --menu-width).
+  document.documentElement.style.setProperty('--menu-width', `${width}px`);
 
   // Underline thickness and its gap below the letters both come from the
   // reference line, then apply to every link (CSS: --rule, --gap, --ascent).

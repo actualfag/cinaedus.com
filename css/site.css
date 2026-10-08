@@ -85,9 +85,9 @@ a {
   text-decoration: none;
 }
 
-/* Visited links turn grey. CINAEDVS (the home link) is excluded: home is
-   always visited, so it would otherwise be grey permanently. */
-a:visited { color: #6f685e; } /* plain value: browsers restrict what :visited can use */
+/* Visited links: black for now, same as unvisited (was grey #6f685e).
+   CINAEDVS (the home link) is excluded: home is always visited. */
+a:visited { color: #000000; } /* plain value: browsers restrict what :visited can use */
 .row--name a:visited { color: inherit; }
 
 /* The page you're on: its menu item stays underlined and never greys out. */
@@ -131,12 +131,16 @@ a:focus-visible {
 
 /* Inner pages: ordinary reading text under the inscription header. */
 .page-body {
-  max-width: var(--max-width);
+  /* Exactly the menu's width (fit.js may narrow it to fit the window). */
+  max-width: var(--menu-width, var(--max-width));
   margin: 0 auto;
   font-size: clamp(18px, 2.2vw, 24px);
   line-height: 1.45;
 }
 .page-body > * { max-width: 34em; }
+.page-body img,
+.page-body video,
+.page-body iframe { max-width: 100%; height: auto; } /* never wider than the menu */
 /* Space under the menu only when there's content (the homepage has none,
    so it adds nothing that could cause a scroll). */
 .page-body:has(> :not(.sr)) { margin-top: 2.5em; }
