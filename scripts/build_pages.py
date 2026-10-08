@@ -28,14 +28,13 @@ TEMPLATE = """<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{label} · Cinaedus</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&display=swap">
   <link rel="stylesheet" href="/css/site.css">
   <script>document.documentElement.classList.add('js');</script>
   <script src="/js/fit.js" defer></script>
   <script src="/js/sticky.js" defer></script>
   <script src="/js/nav.js" defer></script>
+  <script src="/js/visits.js" defer></script>
+  <script src="/js/count.js" defer></script>
 </head>
 <body>
   <!-- Menu copied from index.html by scripts/build_pages.py; edit it there. -->

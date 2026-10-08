@@ -15,12 +15,13 @@ const root = document.querySelector('.inscription');
 const lines = [...root.querySelectorAll('.line')];
 const ctx = document.createElement('canvas').getContext('2d');
 
-// Visible text only (skips screen-reader labels).
+// The line's own text (skips screen-reader labels and the visit numeral,
+// which is laid over the line and must not affect its fit; see count.js).
 function visibleText(line) {
   let text = '';
   const walk = document.createTreeWalker(line, NodeFilter.SHOW_TEXT);
   while (walk.nextNode()) {
-    if (!walk.currentNode.parentElement.closest('.sr')) text += walk.currentNode.textContent;
+    if (!walk.currentNode.parentElement.closest('.sr, .numeral')) text += walk.currentNode.textContent;
   }
   return text.trim();
 }
@@ -129,7 +130,7 @@ function fit() {
   root.dispatchEvent(new Event('fit'));
 }
 
-// Don't measure until Forum is in (or 3s pass), otherwise sizes are computed
+// Don't measure until the font is in (or 3s pass), otherwise sizes are computed
 // from the fallback font. Then refit on resize and whenever fonts settle.
 let started = false;
 function start() {
@@ -142,7 +143,7 @@ new ResizeObserver(() => {
 }).observe(root);
 
 Promise.race([
-  document.fonts.load(`400 ${REF}px Forum`, 'CINAEDVS·').then(() => document.fonts.ready),
+  document.fonts.load(`400 ${REF}px "Times New Roman"`, 'CINAEDVS·').then(() => document.fonts.ready),
   new Promise((r) => setTimeout(r, 3000)),
 ]).then(start, start);
 document.fonts.addEventListener('loadingdone', () => started && fit());
