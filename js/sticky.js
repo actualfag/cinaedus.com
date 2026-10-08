@@ -18,11 +18,24 @@
   // Mirror the fitted size, edge trims and underline baseline of the original.
   function sync() {
     if (row && bar) {
+      // Same width as the menu, which fit.js may narrow to fit the window.
+      bar.firstElementChild.style.maxWidth = `${header.getBoundingClientRect().width}px`;
       const copy = bar.querySelector('.row');
       const src = row.querySelectorAll('.line');
       copy.querySelectorAll('.line').forEach((line, i) => { line.style.cssText = src[i].style.cssText; });
       const links = row.querySelectorAll('a');
       copy.querySelectorAll('a').forEach((a, i) => { a.style.setProperty('--base', links[i].style.getPropertyValue('--base')); });
+
+      // End the bar exactly at the bottom of the underline: no space below it.
+      const current = copy.querySelector('a[aria-current="page"]');
+      if (current) {
+        const vars = getComputedStyle(document.documentElement);
+        const base = parseFloat(current.style.getPropertyValue('--base')) || 0;
+        const gap = parseFloat(vars.getPropertyValue('--gap')) || 0;
+        const rule = parseFloat(vars.getPropertyValue('--rule')) || 0;
+        const top = current.getBoundingClientRect().top - bar.getBoundingClientRect().top;
+        bar.style.height = `${top + base + gap + rule}px`;
+      }
     }
     update();
   }

@@ -40,11 +40,8 @@ function bearings(line, style) {
 
 let lastWidth = 0;
 
-function fit() {
-  const width = root.clientWidth;
-  lastWidth = width;
-  if (!width) return;
-
+// Size every line to `width`.
+function fitLines(width) {
   for (const line of lines) {
     line.classList.remove('is-wrapped');
     line.style.fontSize = `${REF}px`;
@@ -73,6 +70,28 @@ function fit() {
     line.style.marginLeft = `${-b.left}em`;
     line.style.marginRight = `${-(ls + b.right)}em`;
   }
+}
+
+function fit() {
+  // Start from the CSS maximum width (--max-width), then fit.
+  root.style.maxWidth = '';
+  let width = root.clientWidth;
+  if (!width) return;
+  fitLines(width);
+
+  // Never taller than the window. Every line scales with the width, so the
+  // menu's height is a fixed proportion of it: if it's too tall, shrink the
+  // width by exactly that proportion and fit again.
+  const body = getComputedStyle(document.body);
+  const available = document.documentElement.clientHeight
+    - parseFloat(body.paddingTop) - parseFloat(body.paddingBottom);
+  const height = root.getBoundingClientRect().height;
+  if (available > 0 && height > available) {
+    root.style.maxWidth = `${Math.floor((width * available) / height)}px`;
+    width = root.clientWidth;
+    fitLines(width);
+  }
+  lastWidth = width;
 
   // Underline thickness and its gap below the letters both come from the
   // reference line, then apply to every link (CSS: --rule, --gap, --ascent).
@@ -126,3 +145,5 @@ Promise.race([
 ]).then(start, start);
 document.fonts.addEventListener('loadingdone', () => started && fit());
 window.addEventListener('load', () => started && fit());
+// Window height changes don't resize .inscription, so watch the window too.
+window.addEventListener('resize', () => started && requestAnimationFrame(fit));

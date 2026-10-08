@@ -100,7 +100,7 @@ a:visited { color: #6f685e; } /* plain value: browsers restrict what :visited ca
   inset: 0 0 auto;
   z-index: 10;
   padding-inline: var(--pad);
-  padding-bottom: clamp(4px, 0.8vw, 10px); /* room under the underline; top stays aligned */
+  overflow: hidden; /* sticky.js sets the height so the bar ends at the underline */
   background: var(--bg);
   color: var(--ink);
   visibility: hidden;
@@ -132,11 +132,14 @@ a:focus-visible {
 /* Inner pages: ordinary reading text under the inscription header. */
 .page-body {
   max-width: var(--max-width);
-  margin: 2.5em auto 0;
+  margin: 0 auto;
   font-size: clamp(18px, 2.2vw, 24px);
   line-height: 1.45;
 }
 .page-body > * { max-width: 34em; }
+/* Space under the menu only when there's content (the homepage has none,
+   so it adds nothing that could cause a scroll). */
+.page-body:has(> :not(.sr)) { margin-top: 2.5em; }
 .page-body p { margin: 0 0 1em; }
 .page-body h2 {
   margin: 2em 0 0.4em;
