@@ -1,7 +1,10 @@
 // Sizes every .line so it spans the full width of .inscription.
-// Measures the real rendered text at 100px, then scales to fit; also trims
-// the side bearings of the first and last letters so ink sits flush with
-// the edges. Content lives in index.html — this file needs no editing.
+// Measures each line's real rendered width at its current size (everything
+// in it scales with the font size, so width per px of font size is fixed),
+// then scales to fit; also trims the side bearings of the first and last
+// letters so ink sits flush with the edges. Lines are never temporarily
+// resized to measure them: on phones that made the page jump to the top
+// while scrolling. Content lives in index.html — this file needs no editing.
 
 const MIN = 9;   // px; below this a line wraps instead of shrinking
 const MAX = 400; // px
@@ -43,18 +46,19 @@ let lastWidth = 0;
 
 // Size every line to `width`.
 function fitLines(width) {
+  // Wrapped lines (tiny screens) must be measured unwrapped.
   for (const line of lines) {
-    line.classList.remove('is-wrapped');
-    line.style.fontSize = `${REF}px`;
-    line.style.margin = '0';
+    if (line.classList.contains('is-wrapped')) line.classList.remove('is-wrapped');
   }
 
+  // Width per px of font size, measured at whatever size the line is now.
   const measured = lines.map((line) => {
     const style = getComputedStyle(line);
+    const size = parseFloat(style.fontSize) || REF;
     return {
       line,
-      w: line.getBoundingClientRect().width / REF,
-      ls: parseFloat(style.letterSpacing) / REF || 0,
+      w: line.getBoundingClientRect().width / size,
+      ls: parseFloat(style.letterSpacing) / size || 0,
       b: bearings(line, style),
     };
   });
@@ -67,28 +71,36 @@ function fitLines(width) {
       line.style.fontSize = `${MIN}px`;
       continue;
     }
-    line.style.fontSize = `${size}px`;
+    // Skip sub-pixel changes from measurement rounding, so repeated refits
+    // (e.g. a phone's address bar moving) leave the layout untouched.
+    const current = parseFloat(line.style.fontSize);
+    if (!(Math.abs(size - current) < 0.01)) line.style.fontSize = `${size}px`;
     line.style.marginLeft = `${-b.left}em`;
     line.style.marginRight = `${-(ls + b.right)}em`;
   }
 }
 
 function fit() {
-  // Start from the CSS maximum width (--max-width), then fit.
-  root.style.maxWidth = '';
   let width = root.clientWidth;
   if (!width) return;
   fitLines(width);
 
   // Never taller than the window. Every line scales with the width, so the
-  // menu's height is a fixed proportion of it: if it's too tall, shrink the
-  // width by exactly that proportion and fit again.
+  // menu's height is a fixed proportion of it: work out the widest it can
+  // be (up to --max-width and the page width) without exceeding the window
+  // height, and resize once, straight to that width.
   const body = getComputedStyle(document.body);
   const available = document.documentElement.clientHeight
     - parseFloat(body.paddingTop) - parseFloat(body.paddingBottom);
+  const roomWide = document.body.clientWidth - parseFloat(body.paddingLeft) - parseFloat(body.paddingRight);
+  const cssMax = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--max-width')) || roomWide;
+  const fullWidth = Math.min(cssMax, roomWide);
   const height = root.getBoundingClientRect().height;
-  if (available > 0 && height > available) {
-    root.style.maxWidth = `${Math.floor((width * available) / height)}px`;
+  const target = available > 0 && height > 0
+    ? Math.min(fullWidth, Math.floor((width * available) / height))
+    : fullWidth;
+  if (Math.abs(target - width) > 0.5) {
+    root.style.maxWidth = target >= fullWidth ? '' : `${target}px`;
     width = root.clientWidth;
     fitLines(width);
   }
