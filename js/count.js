@@ -7,21 +7,37 @@
 // spacing set so its ink runs from the first replaced letter's ink to the
 // final N's. Hover or tap INNOVATION (or the numeral) for "Page views: N".
 //
-// PREVIEW: the count is this browser's own page views (localStorage). A
-// site-wide total would come from a small server counter instead; only
-// visitNumber() would change.
+// The number is the site's total page views, kept in Supabase: each page
+// view calls count_page_view(site), which adds one and returns the new
+// total (the table itself is locked; that function is all visitors can
+// use). Each site is counted separately. Off the live domains (e.g.
+// localhost), or if Supabase can't be reached, it falls back to this
+// browser's own count. The last total seen is shown instantly, then
+// updated when the real one arrives.
 //
-// Every 7th load (1, 8, 15…) shows the full phrase instead (CYCLE).
+// Every 7th load in this browser (its 1st, 8th, 15th…) shows the full
+// phrase instead (CYCLE).
 //
 // Testing: ?visit=1888 shows that number (without counting);
-//          ?reset-visits starts the count over.
+//          ?reset-visits restarts this browser's own count.
 
 // Block scope: scripts share one global scope, so keep names private.
 {
-  const KEY = 'cinaedus.count';
-  // The numeral always matches the page-view count, except that every 7th
-  // load shows the full phrase instead (loads 1, 8, 15, 22…); the next load
-  // carries on with the real count (9 = IX).
+  const KEY = 'cinaedus.count'; // this browser's own page views
+
+  // Supabase counter. The publishable key is public by design: it can only
+  // call count_page_view(), never read or edit the table.
+  const SUPABASE_URL = 'https://hgkqsjuqjvpkgvztbeop.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_i_7uMZRzkCTM-mEvA9gYbA_maFojd05';
+  const SITES = {
+    'cinaedus.com': 'cinaedus.com',
+    'www.cinaedus.com': 'cinaedus.com',
+    'cl.cinaedus.com': 'cl.cinaedus.com',
+  };
+  const site = SITES[location.hostname]; // undefined locally: no remote count
+  const TOTAL_KEY = `cinaedus.total.${site}`; // last total seen, for instant display
+  // The numeral always matches the page-view total, except that every 7th
+  // load in this browser shows the full phrase instead.
   const CYCLE = 7;
   const header = document.querySelector('.inscription');
   const row = header.querySelector('.row--tagline');
@@ -48,21 +64,33 @@
     return [...[...roman(Math.floor(n / 1000))].map((c) => `${c}̅`), ...roman(n % 1000)];
   }
 
-  function read() {
-    try { return parseInt(localStorage.getItem(KEY), 10) || 0; } catch { return 0; }
+  function read(key = KEY) {
+    try { return parseInt(localStorage.getItem(key), 10) || 0; } catch { return 0; }
   }
-  function write(n) {
-    try { localStorage.setItem(KEY, String(n)); } catch { /* storage unavailable */ }
+  function write(n, key = KEY) {
+    try { localStorage.setItem(key, String(n)); } catch { /* storage unavailable */ }
   }
   if (params.has('reset-visits')) write(0);
 
-  const preview = parseInt(params.get('visit'), 10);
-  function visitNumber() {
-    if (preview > 0) return preview;
-    const n = read() + 1;
-    write(n);
-    return n;
+  // Add one to the site total and return the new total, or null.
+  async function countRemote() {
+    if (!site) return null;
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/count_page_view`, {
+        method: 'POST',
+        headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ p_site: site }),
+        keepalive: true,
+      });
+      if (!res.ok) return null;
+      const total = Number(await res.json());
+      return Number.isFinite(total) && total > 0 ? total : null;
+    } catch {
+      return null;
+    }
   }
+
+  const preview = parseInt(params.get('visit'), 10);
 
   if (line) {
     const phrase = [...line.textContent.trim()]; // RESEARCH·DESIGN·INNOVATION
@@ -92,8 +120,7 @@
 
     let numeralUnits = [];
 
-    function show(n) {
-      const fullPhrase = n % CYCLE === 1; // 1, 8, 15, 22…
+    function show(n, fullPhrase) {
       numeralUnits = fullPhrase ? [] : romanUnits(n);
       const keep = Math.max(0, phrase.length - numeralUnits.length);
       const zoneStart = Math.min(lastWord, keep);
@@ -211,8 +238,29 @@
     });
     addEventListener('scroll', hideTip, { passive: true });
 
+    // One page view: count it here and on the site total, show the result.
+    let latest = 0; // ignore replies to earlier page views
+    function visit() {
+      if (preview > 0) {
+        show(preview, preview % CYCLE === 1);
+        return;
+      }
+      const own = read() + 1;
+      write(own);
+      const fullPhrase = own % CYCLE === 1; // this browser's 1st, 8th, 15th…
+      const cached = read(TOTAL_KEY);
+      const guess = site && cached ? cached + 1 : own;
+      show(guess, fullPhrase);
+      const id = ++latest;
+      countRemote().then((total) => {
+        if (!total || id !== latest) return;
+        write(total, TOTAL_KEY);
+        if (total !== guess) show(total, fullPhrase);
+      });
+    }
+
     header.addEventListener('fit', place);
-    show(visitNumber());
-    document.addEventListener('pagechange', () => show(visitNumber())); // nav.js
+    visit();
+    document.addEventListener('pagechange', visit); // nav.js
   }
 }
