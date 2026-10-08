@@ -35,6 +35,7 @@ TEMPLATE = """<!doctype html>
   <script>document.documentElement.classList.add('js');</script>
   <script src="/js/fit.js" defer></script>
   <script src="/js/sticky.js" defer></script>
+  <script src="/js/nav.js" defer></script>
 </head>
 <body>
   <!-- Menu copied from index.html by scripts/build_pages.py; edit it there. -->
@@ -53,16 +54,14 @@ TEMPLATE = """<!doctype html>
 
 def home_menu():
     home = (ROOT / "index.html").read_text()
-    m = re.search(r'  <main class="inscription">\n(.*?)\n  </main>', home, re.S)
+    m = re.search(r'  <header class="inscription">\n(.*?)\n  </header>', home, re.S)
     if not m:
-        raise SystemExit('index.html: could not find <main class="inscription">')
+        raise SystemExit('index.html: could not find <header class="inscription">')
     return m.group(1)
 
 
 def menu_for(slug, menu):
-    # CINAEDVS is a plain line here; the page's own title is its h1.
-    menu = menu.replace('<h1 class="row row--name">', '<p class="row row--name">', 1)
-    menu = menu.replace("</h1>", "</p>", 1)
+    # Only this page's own menu item is marked current (not CINAEDVS/home).
     menu = menu.replace(' aria-current="page"', "")
     href = f'href="/{slug}/"'
     if href not in menu:

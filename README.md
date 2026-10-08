@@ -11,7 +11,8 @@ full width.
 | `contact/`, `business-inquiries/`, `portfolio/`, `capabilities/`, `about/` | One page each (`index.html` inside). Put content in its `<main class="page-body">`. |
 | `css/site.css` | Colours, font, spacing, dots, link underline. Values at the top. |
 | `js/fit.js` | Sizes each line to the full width. No need to edit. |
-| `js/sticky.js` | Inner pages: pins the current menu line, inverted, when scrolling. |
+| `js/sticky.js` | Inner pages: pins the current menu line when scrolling. |
+| `js/nav.js` | Menu clicks swap only `<main class="page-body">`; no page reloads. |
 | `scripts/build_pages.py` | Copies the menu from `index.html` into every inner page. |
 
 **Changing the menu:** edit it in `index.html`, then run

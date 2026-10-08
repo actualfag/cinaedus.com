@@ -2,7 +2,7 @@
 
 :root {
   --bg: #f2eee3;
-  --ink: #262420;
+  --ink: #000000;
   --max-width: 1000px;
   --pad: clamp(16px, 6vw, 72px);
   --ls: 0.125;          /* letter spacing, em */
