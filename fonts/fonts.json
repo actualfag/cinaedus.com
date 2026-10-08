@@ -1,0 +1,128 @@
+{
+  "about": "Font candidates for the inscription. Add an entry to audition a new face; no component changes needed. Use \"css\" for a hosted stylesheet, \"faces\" for local WOFF2 files (paths relative to this file), or \"system\": true for a font installed on this machine (audition only — visitors may not have it).",
+  "example_local_entry": {
+    "id": "my-roman",
+    "name": "My Roman",
+    "family": "My Roman",
+    "faces": [
+      { "src": "my-roman-300.woff2", "weight": 300 },
+      { "src": "my-roman-400.woff2", "weight": 400 }
+    ],
+    "weights": [300, 400],
+    "notes": "Drop the .woff2 files in /fonts and move this object into the list below."
+  },
+  "fonts": [
+    {
+      "id": "della-respira",
+      "name": "Della Respira",
+      "family": "Della Respira",
+      "css": "https://fonts.googleapis.com/css2?family=Della+Respira&display=swap",
+      "weights": [400],
+      "notes": "Based on Renaissance inscriptional capitals. Light, modest contrast."
+    },
+    {
+      "id": "forum",
+      "name": "Forum",
+      "family": "Forum",
+      "css": "https://fonts.googleapis.com/css2?family=Forum&display=swap",
+      "weights": [400],
+      "notes": "Roman capitals with a slightly irregular, carved feel."
+    },
+    {
+      "id": "marcellus",
+      "name": "Marcellus",
+      "family": "Marcellus",
+      "css": "https://fonts.googleapis.com/css2?family=Marcellus&display=swap",
+      "weights": [400],
+      "notes": "Flared, Trajan-derived capitals with tiny wedge serifs."
+    },
+    {
+      "id": "gideon-roman",
+      "name": "Gideon Roman",
+      "family": "Gideon Roman",
+      "css": "https://fonts.googleapis.com/css2?family=Gideon+Roman&display=swap",
+      "weights": [400],
+      "notes": "Thin, wide classical capitals."
+    },
+    {
+      "id": "cinzel",
+      "name": "Cinzel",
+      "family": "Cinzel",
+      "css": "https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&display=swap",
+      "weights": [400, 500, 600],
+      "notes": "Trajan proportions. Clean, somewhat polished."
+    },
+    {
+      "id": "quattrocento",
+      "name": "Quattrocento",
+      "family": "Quattrocento",
+      "css": "https://fonts.googleapis.com/css2?family=Quattrocento:wght@400;700&display=swap",
+      "weights": [400, 700],
+      "notes": "Sturdy classical serif; wedge-like serifs."
+    },
+    {
+      "id": "cormorant-sc",
+      "name": "Cormorant SC",
+      "family": "Cormorant SC",
+      "css": "https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600&display=swap",
+      "weights": [300, 400, 500, 600],
+      "notes": "Garalde capitals; light weights get close to fashion territory."
+    },
+    {
+      "id": "spectral-sc",
+      "name": "Spectral SC",
+      "family": "Spectral SC",
+      "css": "https://fonts.googleapis.com/css2?family=Spectral+SC:wght@200;300;400;500&display=swap",
+      "weights": [200, 300, 400, 500],
+      "notes": "Very thin weights available; contemporary."
+    },
+    {
+      "id": "eb-garamond",
+      "name": "EB Garamond",
+      "family": "EB Garamond",
+      "css": "https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&display=swap",
+      "weights": [400, 500, 600],
+      "notes": "Garamond capitals; broad rounds, narrow E/S."
+    },
+    {
+      "id": "goudy-bookletter",
+      "name": "Goudy Bookletter 1911",
+      "family": "Goudy Bookletter 1911",
+      "css": "https://fonts.googleapis.com/css2?family=Goudy+Bookletter+1911&display=swap",
+      "weights": [400],
+      "notes": "Goudy's inscription-influenced capitals; irregular, warm."
+    },
+    {
+      "id": "linden-hill",
+      "name": "Linden Hill",
+      "family": "Linden Hill",
+      "css": "https://fonts.googleapis.com/css2?family=Linden+Hill&display=swap",
+      "weights": [400],
+      "notes": "Goudy Deepdene revival; delicate."
+    },
+    {
+      "id": "bellefair",
+      "name": "Bellefair",
+      "family": "Bellefair",
+      "css": "https://fonts.googleapis.com/css2?family=Bellefair&display=swap",
+      "weights": [400],
+      "notes": "Thin, high-waisted capitals."
+    },
+    {
+      "id": "optima",
+      "name": "Optima (system)",
+      "family": "Optima",
+      "system": true,
+      "weights": [400, 500],
+      "notes": "Zapf's flared sans after Florentine inscriptions. macOS only — audition, not production."
+    },
+    {
+      "id": "times-new-roman",
+      "name": "Times New Roman (system)",
+      "family": "Times New Roman",
+      "system": true,
+      "weights": [400, 700],
+      "notes": "1931 newspaper text face, for comparison. Also the fallback font."
+    }
+  ]
+}

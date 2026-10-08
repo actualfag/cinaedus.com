@@ -1,0 +1,112 @@
+/* Inscription page. Values set by js/inscription.js → applyPage(). */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body { background: var(--page-bg, #f2eee3); }
+
+.page {
+  container-type: inline-size;
+  min-height: 100svh;
+  background: var(--page-bg, #f2eee3);
+  color: var(--page-fg, #262420);
+  overflow-x: clip;
+}
+
+.page-inner {
+  padding: var(--page-pad, 16px);
+  padding-top: calc(var(--page-pad, 16px) + var(--top-offset, 0px));
+}
+
+.inscription {
+  position: relative;
+  margin-inline: auto;
+}
+.page[data-align="left"] .inscription { margin-inline: 0 auto; }
+.page[data-align="right"] .inscription { margin-inline: auto 0; }
+
+/* Hidden until the first fit so visitors never see unfitted text. */
+.inscription:not(.insc-ready) { visibility: hidden; }
+
+.insc-row, .insc-nav { display: block; margin: 0; padding: 0; font: inherit; }
+
+.insc-linebox {
+  display: flex;
+  position: relative;
+}
+
+.insc-line {
+  display: block;
+  flex: none;
+  white-space: nowrap;
+  font-kerning: normal;
+  font-synthesis: none;
+}
+
+.insc-dot {
+  position: relative;
+  top: calc(var(--dot-shift, 0) * 1em);
+  font-size: calc(var(--dot-scale, 1) * 1em);
+  line-height: 0;
+  margin-inline: calc(var(--dot-space, 0) * 1em);
+}
+
+.inscription a {
+  color: inherit;
+  text-decoration: none;
+}
+/* Drawn as a background line rather than text-decoration so it runs
+   unbroken across the numeral, dots and dot spacing of the whole entry. */
+.inscription a:hover,
+.inscription a:focus-visible {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 calc(100% - 0.1em) / calc(100% - var(--ls, 0) * 1em) max(1px, 0.035em);
+}
+.inscription a:focus-visible {
+  outline: max(1px, 0.025em) solid currentColor;
+  outline-offset: 0.1em;
+}
+
+.insc-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+  user-select: none;
+}
+
+/* Debug overlay (editor only; the public page never enables it). */
+.insc-debug { outline: 1px solid rgb(200 40 30 / 0.7); }
+.insc-debug .insc-line { box-shadow: inset 0 0 0 1px rgb(30 90 200 / 0.55); }
+.insc-dbg { position: absolute; pointer-events: none; }
+.insc-dbg-target {
+  top: 0;
+  bottom: 0;
+  border-inline: 1px dashed rgb(200 40 30 / 0.65);
+  background: rgb(200 40 30 / 0.04);
+}
+.insc-dbg-ink {
+  left: 0;
+  right: 0;
+  border-block: 1px dotted rgb(0 130 90 / 0.6);
+}
+.insc-dbg-label {
+  top: 0;
+  right: 0;
+  z-index: 2;
+  padding: 1px 4px;
+  font: 10px/1.3 ui-monospace, SFMono-Regular, Menlo, monospace;
+  letter-spacing: 0;
+  color: #1a4fa0;
+  background: rgb(255 255 255 / 0.85);
+  white-space: nowrap;
+}
+.insc-dbg-label.is-limited { color: #b3261e; }
+@container (min-width: 960px) {
+  .insc-dbg-label { left: calc(100% + 12px); right: auto; top: 50%; transform: translateY(-50%); }
+}

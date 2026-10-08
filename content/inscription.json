@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "meta": {
+    "title": "Canaedus",
+    "description": "Research, design and innovation by Lincoln Neiger."
+  },
+  "global": {
+    "font": "forum",
+    "fontWeight": 400,
+    "maxWidth": 1000,
+    "pageAlign": "center",
+    "topOffset": 0,
+    "letterSpacing": 0.125,
+    "minFontSize": 14,
+    "maxFontSize": 400,
+    "lineHeight": 1.01,
+    "rowGap": 0,
+    "clearance": 0.05,
+    "allowOverlap": false,
+    "opticalEdges": true,
+    "background": "#f2eee3",
+    "color": "#262420",
+    "padding": {
+      "min": 16,
+      "fluid": 6,
+      "max": 72
+    },
+    "dot": {
+      "char": "·",
+      "scale": 0.95,
+      "shift": -0.13,
+      "space": 0.3
+    },
+    "navLabel": "Site",
+    "experimentalStretch": false,
+    "stretchLimit": 2
+  },
+  "rows": [
+    {
+      "id": "name",
+      "element": "h1",
+      "items": [
+        {
+          "label": "Canaedus",
+          "display": "CANAEDVS"
+        }
+      ],
+      "fontSize": 222.5
+    },
+    {
+      "id": "tagline-1",
+      "items": [
+        {
+          "label": "Research"
+        },
+        {
+          "label": "Design"
+        },
+        {
+          "label": "Innovation"
+        }
+      ]
+    },
+    {
+      "id": "nav-1",
+      "items": [
+        {
+          "numeral": "i",
+          "label": "Contact",
+          "href": "#contact"
+        }
+      ],
+      "mobile": {
+        "breaks": [
+          2
+        ]
+      }
+    },
+    {
+      "id": "nav-2",
+      "items": [
+        {
+          "numeral": "Ii",
+          "label": "Business inquiries",
+          "display": "BVSINESS INQVIRIES",
+          "href": "#business"
+        }
+      ]
+    },
+    {
+      "id": "nav-3",
+      "items": [
+        {
+          "href": "#projects",
+          "label": "portfolio",
+          "numeral": "III"
+        }
+      ]
+    },
+    {
+      "id": "tagline-2",
+      "items": [
+        {
+          "label": "abovt",
+          "href": "#",
+          "display": "Capabilities",
+          "numeral": "iv"
+        }
+      ],
+      "fontSize": 65.5
+    },
+    {
+      "id": "byline",
+      "items": [
+        {
+          "label": "W Lincoln Neiger",
+          "href": "#linkedin"
+        },
+        {
+          "href": "#about",
+          "numeral": "v",
+          "label": "abovt"
+        }
+      ]
+    }
+  ]
+}
