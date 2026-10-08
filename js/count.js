@@ -11,12 +11,18 @@
 // site-wide total would come from a small server counter instead; only
 // visitNumber() would change.
 //
+// Every 7th load (1, 8, 15…) shows the full phrase instead (CYCLE).
+//
 // Testing: ?visit=1888 shows that number (without counting);
 //          ?reset-visits starts the count over.
 
 // Block scope: scripts share one global scope, so keep names private.
 {
   const KEY = 'cinaedus.count';
+  // The numeral always matches the page-view count, except that every 7th
+  // load shows the full phrase instead (loads 1, 8, 15, 22…); the next load
+  // carries on with the real count (9 = IX).
+  const CYCLE = 7;
   const header = document.querySelector('.inscription');
   const row = header.querySelector('.row--tagline');
   const line = row?.querySelector('.line');
@@ -87,7 +93,8 @@
     let numeralUnits = [];
 
     function show(n) {
-      numeralUnits = n > 1 ? romanUnits(n) : [];
+      const fullPhrase = n % CYCLE === 1; // 1, 8, 15, 22…
+      numeralUnits = fullPhrase ? [] : romanUnits(n);
       const keep = Math.max(0, phrase.length - numeralUnits.length);
       const zoneStart = Math.min(lastWord, keep);
       line.replaceChildren();
