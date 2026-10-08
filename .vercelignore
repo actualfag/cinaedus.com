@@ -1,0 +1,11 @@
+# Not published: design editor and its data, local scripts, docs.
+# The public site is index.html, the page folders, css/site.css and js/.
+dev/
+scripts/
+content/
+fonts/
+css/inscription.css
+js/inscription.js
+js/fonts.js
+README.md
+.gitignore
