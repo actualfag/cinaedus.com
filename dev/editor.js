@@ -15,7 +15,7 @@ const PREFS_KEY = 'canaedvs.editor.prefs';
 const PREVIEW_WIDTHS = ['full', 1440, 1024, 768, 390, 320];
 
 const SPECIMEN_ROWS = [
-  { items: [{ label: 'Canaedus', display: 'CANAEDVS' }] },
+  { items: [{ label: 'Cinaedus', display: 'CINAEDVS' }] },
   { items: [{ label: 'Research' }, { label: 'Design' }, { label: 'Innovation' }] },
   { items: [{ label: 'Lincoln Neiger' }] },
   {

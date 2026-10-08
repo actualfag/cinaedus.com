@@ -1,7 +1,7 @@
 {
   "version": 1,
   "meta": {
-    "title": "Canaedus",
+    "title": "Cinaedus",
     "description": "Research, design and innovation by Lincoln Neiger."
   },
   "global": {
@@ -41,8 +41,8 @@
       "element": "h1",
       "items": [
         {
-          "label": "Canaedus",
-          "display": "CANAEDVS"
+          "label": "Cinaedus",
+          "display": "CINAEDVS"
         }
       ],
       "fontSize": 222.5

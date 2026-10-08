@@ -1,4 +1,4 @@
-# canaedus.com
+# cinaedus.com
 
 An inscription-style homepage: rows of Roman capitals, each fitted to the
 full width.

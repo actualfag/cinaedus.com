@@ -27,7 +27,7 @@ TEMPLATE = """<!doctype html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{label} · Canaedus</title>
+  <title>{label} · Cinaedus</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Forum&display=swap">
@@ -60,7 +60,7 @@ def home_menu():
 
 
 def menu_for(slug, menu):
-    # CANAEDVS is a plain line here; the page's own title is its h1.
+    # CINAEDVS is a plain line here; the page's own title is its h1.
     menu = menu.replace('<h1 class="row row--name">', '<p class="row row--name">', 1)
     menu = menu.replace("</h1>", "</p>", 1)
     menu = menu.replace(' aria-current="page"', "")

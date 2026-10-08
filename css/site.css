@@ -1,4 +1,4 @@
-/* Canaedus site. Font sizes come from js/fit.js; everything else is here. */
+/* Cinaedus site. Font sizes come from js/fit.js; everything else is here. */
 
 :root {
   --bg: #f2eee3;
@@ -85,7 +85,7 @@ a {
   text-decoration: none;
 }
 
-/* Visited links turn grey. CANAEDVS (the home link) is excluded: home is
+/* Visited links turn grey. CINAEDVS (the home link) is excluded: home is
    always visited, so it would otherwise be grey permanently. */
 a:visited { color: #6f685e; } /* plain value: browsers restrict what :visited can use */
 .row--name a:visited { color: inherit; }

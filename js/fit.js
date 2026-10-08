@@ -121,7 +121,7 @@ new ResizeObserver(() => {
 }).observe(root);
 
 Promise.race([
-  document.fonts.load(`400 ${REF}px Forum`, 'CANAEDVS·').then(() => document.fonts.ready),
+  document.fonts.load(`400 ${REF}px Forum`, 'CINAEDVS·').then(() => document.fonts.ready),
   new Promise((r) => setTimeout(r, 3000)),
 ]).then(start, start);
 document.fonts.addEventListener('loadingdone', () => started && fit());
