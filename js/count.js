@@ -3,9 +3,10 @@
 //
 // The phrase never changes shape: the replaced letters stay in the line,
 // invisible (so the fit and every remaining letter keep their exact
-// positions), and the numeral is laid over the space they occupied, its
-// spacing set so its ink runs from the first replaced letter's ink to the
-// final N's. Hover or tap INNOVATION (or the numeral) for "Page views: N".
+// positions), and the numeral is laid over the space they occupied, set
+// with the phrase's own letter spacing and right-aligned to the final N's
+// ink, so spare room shows as a gap before it. Hover or tap INNOVATION (or
+// the numeral) for "Page views: N".
 //
 // The number is the site's total page views, kept in Supabase: each page
 // view calls count_page_view(site), which adds one and returns the new
@@ -180,25 +181,23 @@
       const x0 = first.left;
       const x1 = span - ls - last.right;
 
-      // Spread the numeral so its ink fills exactly [x0, x1].
+      // Set the numeral as a group with the phrase's own letter spacing,
+      // right-aligned so its ink ends where the final N's did; any spare
+      // room is left as a gap before it. If it's too long for the vacated
+      // space, tighten its spacing, and only as a last resort narrow it.
       const units = numeralUnits.map(bearings);
-      const natural = units.reduce((sum, u) => sum + u.width, 0);
+      // Measured as a whole so kerning between letter pairs is included,
+      // as the browser renders it.
+      const natural = ctx.measureText(numeralUnits.join('')).width;
       const k = units.length;
-      let offset;
-      let spacing = 0;
+      const room = x1 - x0;
+      const inkAt = (gap) => natural + (k - 1) * gap - units[0].left - units[k - 1].right;
+      let spacing = ls;
       let scale = 1;
-      if (k === 1) {
-        offset = x1 - (units[0].width - units[0].right); // single character: right-aligned
-      } else {
-        offset = x0 - units[0].left;
-        spacing = (x1 - offset - natural + units[k - 1].right) / (k - 1);
-        if (spacing < 0) {
-          // Doesn't fit even with no spacing: narrow it slightly instead.
-          spacing = 0;
-          scale = (x1 - x0) / (natural - units[0].left - units[k - 1].right);
-          offset = x0 - units[0].left * scale;
-        }
-      }
+      if (k > 1 && inkAt(spacing) > room) spacing = Math.max(0, (room - inkAt(0)) / (k - 1));
+      if (inkAt(spacing) > room) scale = room / inkAt(spacing);
+      // Ink right edge = offset + (advance of the group - right bearing) × scale.
+      const offset = x1 - (natural + (k - 1) * spacing - units[k - 1].right) * scale;
       Object.assign(numeral.style, {
         left: `${offset}px`,
         top: '0px',
