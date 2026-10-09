@@ -9,9 +9,12 @@
 // the numeral) for "Page views: N".
 //
 // The number is the site's total page views, kept in Supabase: each page
-// view calls count_page_view(site), which adds one and returns the new
-// total (the table itself is locked; that function is all visitors can
-// use). Each site is counted separately. Off the live domains (e.g.
+// view calls record_page_view(), which adds one to the total, logs the view
+// for statistics (supabase/stats.sql) and returns the new total. The tables
+// are locked; that function is all visitors can use (supabase/schema.sql).
+// Each site is counted separately. The log stores the page, time, where the
+// visitor came from, and an anonymous random visitor ID kept in this
+// browser; nothing personal. Off the live domains (e.g.
 // localhost), or if Supabase can't be reached, it falls back to this
 // browser's own count. The last total seen is shown instantly, then
 // updated when the real one arrives.
@@ -37,6 +40,27 @@
   };
   const site = SITES[location.hostname]; // undefined locally: no remote count
   const TOTAL_KEY = `cinaedus.total.${site}`; // last total seen, for instant display
+  const VISITOR_KEY = 'cinaedus.visitor';       // anonymous random ID for unique counts
+
+  function visitorId() {
+    try {
+      let id = localStorage.getItem(VISITOR_KEY);
+      if (!id) {
+        id = crypto.randomUUID();
+        localStorage.setItem(VISITOR_KEY, id);
+      }
+      return id;
+    } catch {
+      return crypto.randomUUID(); // storage unavailable: counts as new each time
+    }
+  }
+
+  // The other website this visit came from, on arrival only.
+  let referrer = null;
+  try {
+    const from = document.referrer && new URL(document.referrer);
+    if (from && from.hostname !== location.hostname) referrer = from.hostname;
+  } catch { /* no usable referrer */ }
   // The numeral always matches the page-view total, except that every 7th
   // load in this browser shows the full phrase instead.
   const CYCLE = 7;
@@ -73,21 +97,28 @@
   }
   if (params.has('reset-visits')) write(0);
 
-  // Add one to the site total and return the new total, or null.
+  const rpc = async (fn, args) => {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${fn}`, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify(args),
+      keepalive: true,
+    });
+    if (!res.ok) throw new Error(`${fn}: ${res.status}`);
+    const total = Number(await res.json());
+    return Number.isFinite(total) && total > 0 ? total : null;
+  };
+
+  // Record this page view (log + total) and return the new total, or null.
+  // Falls back to the counter-only function if logging isn't set up.
   async function countRemote() {
     if (!site) return null;
+    const args = { p_site: site, p_path: location.pathname, p_visitor: visitorId(), p_referrer: referrer };
+    referrer = null; // only the arrival has one; in-site clicks don't
     try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/count_page_view`, {
-        method: 'POST',
-        headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ p_site: site }),
-        keepalive: true,
-      });
-      if (!res.ok) return null;
-      const total = Number(await res.json());
-      return Number.isFinite(total) && total > 0 ? total : null;
+      return await rpc('record_page_view', args);
     } catch {
-      return null;
+      try { return await rpc('count_page_view', { p_site: site }); } catch { return null; }
     }
   }
 
